@@ -1,0 +1,96 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
+public class RecursivePalindrome {
+    //Recursive function
+    public static boolean isPalindrome(String s) {
+        return isPalindrome(s, 0, s.length() - 1);
+    }
+
+    public static boolean isPalindrome(String s, int low, int high) {
+        if (high <= low) // Base case
+            return true;
+        else if (s.charAt(low) != s.charAt(high)) // Base case
+            return false;
+        else
+            return isPalindrome(s, low + 1, high - 1);
+    }
+
+    //Non-recursive function
+    public static boolean nlsPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        for (int i = 0, j = s.length() - 1; i < j; i++, j--) {
+            if (s.charAt(i) != s.charAt(j)) {
+                return false;
+            }
+        } return true;
+    }
+
+    public static void main(String[] args) {
+
+        // Set up a string array of size 20 and initialize them
+        String[] myArray = new String[20];
+        myArray[0] = "noon";
+        myArray[1] = "holiday";
+        myArray[2] = "anna";
+        myArray[3] = "sunday";
+        myArray[4] = "bob";
+        myArray[5] = "wolf";
+        myArray[6] = "civic";
+        myArray[7] = "level";
+        myArray[8] = "pop";
+        myArray[9] = "ocean";
+        myArray[10] = "madam";
+        myArray[11] = "hello";
+        myArray[12] = "student";
+        myArray[13] = "abba";
+        myArray[14] = "radar";
+        myArray[15] = "kayak";
+        myArray[16] = "table";
+        myArray[17] = "www";
+        myArray[18] = "pop";
+        myArray[19] = "refer";
+
+        // Create a CSV file
+        try (PrintWriter writer = new PrintWriter(new File("PalindromeReport.csv"))) {
+            writer.append("Palindrome,Recursive time,Iterative time");
+            writer.append("\n");
+
+            // Initialize string array with 20 palindromes
+            for (int i = 0; i < myArray.length; i++) {
+                System.out.println("\nIs " + myArray[i] + " a palindrome using recursive call? " + isPalindrome(myArray[i]));
+                System.out.println("Is " + myArray[i] + " a palindrome using iterative call?? " + nlsPalindrome(myArray[i]));
+
+                // Find the time spent for recursive call
+                long start = System.nanoTime();
+                isPalindrome(myArray[i]);
+                long end = System.nanoTime();
+                long duration1 = end - start;
+                System.out.println("Using recursive call the time spent to find word " + myArray[i] + " was " + duration1 + " nanoseconds");
+
+                // Find the time spent for non-recursive call
+                start = System.nanoTime();
+                nlsPalindrome(myArray[i]);
+                end = System.nanoTime();
+                long duration2 = end - start;
+                System.out.println("Using iterative call the time spent to find word " + myArray[i] + " was " + duration2 + " nanoseconds");
+
+                // Display the results in a CSV file
+                StringBuilder sb = new StringBuilder();
+                sb.append(myArray[i]);
+                sb.append(',');
+                sb.append(duration1);
+                sb.append(',');
+                sb.append(duration2);
+                sb.append('\n');
+
+                writer.write(sb.toString());
+            }
+        } catch(FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
