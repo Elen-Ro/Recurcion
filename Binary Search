@@ -1,0 +1,132 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.lang.String;
+import java.util.Arrays;
+
+public class RecursiveBinarySearch {
+
+    //Recursive call
+    public static int BinarySearch(int[] v, int key) {
+        int low = 0;
+        int high = v.length - 1;
+        return BinarySearch(v, key, low, high);
+    }
+
+    //Recursive call
+    public static int BinarySearch(int[] v, int key, int low, int high) {
+        if (low > high) // The list has been exhausted without a match
+            return -low - 1;
+        int mid = (low + high) / 2;
+        if (key < v[mid])
+            return BinarySearch(v, key, low, mid - 1);
+        else if (key == v[mid])
+            return mid;
+        else
+            return BinarySearch(v, key, mid + 1, high);
+    }
+
+    //Non-recursive call
+    public static int nBinarySearch(int arr[], int key) {
+        int l = 0, r = arr.length - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            // Check if x is present at mid
+            if (arr[m] == key)
+                return m;
+            // If x greater, ignore left half
+            if (arr[m] < key)
+                l = m + 1;
+                // If x is smaller, ignore right half
+            else
+                r = m - 1;
+        }
+        // if we reach here, then element is not present
+        return -1;
+    }
+
+    public static void main(String[] args) {
+
+        // Fill an integer array of 1000 multiples of 3 from 0 to 2997
+        // (i.e., 0, 3, 6, 9,…,2997) and have them properly sorted.
+        System.out.println("\nFill an integer array of 1000 multiples of 3 from 0 to 2997 and have them properly sorted");
+        int[] array = new int[1000];
+
+        for (int j = 0; j < array.length; j++) {
+            array[j] = 3 * j;
+            System.out.printf(array[j] + " ");
+        }
+
+        System.out.println("\nTest function and see if it works");
+        for (int j = 0; j < array.length; j++) {
+            System.out.println("\nUsing recursive call element " + array[j] + " is present at index " + BinarySearch(array, array[j],0, array.length-1));
+            System.out.println("Using non-recursive call element " + array[j] + " is present at index " + nBinarySearch(array, array[j]));
+
+            // Find the time spent for finding the number using recursive call
+            long start = System.nanoTime();
+            BinarySearch(array, j);
+            long end = System.nanoTime();
+            long duration = end - start;
+            System.out.println("The time spent for finding number " + array[j] + " using recursive call was " + duration + " nanoseconds");
+
+            // Find the time spent for finding the number using non-recursive call
+            start = System.nanoTime();
+            nBinarySearch(array, j);
+            end = System.nanoTime();
+            duration = end - start;
+            System.out.println("The time spent for finding number " + array[j] + " using non-recursive call was " + duration + " nanoseconds");
+        }
+
+        // Create a CSV file
+        try (PrintWriter writer = new PrintWriter(new File("BinarySearchReport.csv"))) {
+            writer.append("Integer,Recursive time,Iterative time");
+            writer.append("\n");
+
+    // Set up a test array with 20 random integers between 0 and 3000 to test the program
+        System.out.println("\nSet up a test array with 20 random integers between 0 and 3000: ");
+        System.out.println("Test function and see if it works");
+        int[] testArray = new int[20];
+
+        for (int i = 0; i < testArray.length; i++) {
+            testArray[i] = (int) (Math.random() * 3000);
+        }
+
+        for (int i = 0; i < testArray.length; i++) {
+            Arrays.sort(testArray);
+            System.out.print("\n" + testArray[i] + " ");
+            System.out.println("\nUsing recursive call element " + testArray[i] + " is present at index " + BinarySearch(testArray, testArray[i]));
+            System.out.println("Using non-recursive call element " + testArray[i] + " is present at index " + nBinarySearch(testArray, testArray[i]));
+
+            // Find the time spent for finding the number using recursive call
+            long start = System.nanoTime();
+            BinarySearch(testArray, i);
+            long end = System.nanoTime();
+            long duration1 = end - start;
+            System.out.println("The time spent for finding the number " + testArray[i] + " using recursive call was " + duration1 + " nanoseconds");
+
+            // Find the time spent for finding the number using non-recursive call
+            start = System.nanoTime();
+            nBinarySearch(testArray, i);
+            end = System.nanoTime();
+            long duration2 = end - start;
+            System.out.println("The time spent for finding the number " + testArray[i] + " using non-recursive call was " + duration2 + " nanoseconds");
+
+            // Display the results in a CSV file
+            StringBuilder sb = new StringBuilder();
+            sb.append(testArray[i]);
+            sb.append(',');
+            sb.append(duration1);
+            sb.append(',');
+            sb.append(duration2);
+            sb.append('\n');
+
+            writer.write(sb.toString());
+        }
+        } catch(FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+
+
